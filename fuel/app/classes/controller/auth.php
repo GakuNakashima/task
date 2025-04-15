@@ -19,10 +19,14 @@ class Controller_Auth extends Controller
         // ログインを実行
         if (Auth::login($input['username'], $input['password']))
         {
+            \Log::error("ログインしました。");
+			list($driver, $user_id) = Auth::get_user_id();
+			\Log::error('ログイン直後 User ID: ' . $user_id);
 	        // ユーザーは正常にログインされている
-            return Response::redirect('calendar');
+            return Response::redirect('main');
         }
 		else{
+			\Log::error("ログインに失敗しました。");
 			return View::forge('error');
 		}
     }

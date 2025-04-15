@@ -7,8 +7,16 @@
     <?= \Asset::css('form.css'); ?>
 </head>
 <body>
-    <form action="" method="post">
+    <form action="/register/register" method="post">
         <table>
+            <tr>
+                <th>
+                    日付
+                </th>
+                <td>
+                    <input type="date" name="date">
+                </td>
+            </tr>
             <tr>
                 <th>
                     カテゴリー
@@ -19,31 +27,24 @@
                             <option value="life">日用品</option>
                             <option value="transfer">交通費</option>
                             <option value="hobby">趣味</option>
+                            <option value="other">その他</option>
                         </select>
                 </td>
-            </tr>
-            <tr>
-                <th>
-                    内容
-                </th>
-                <td>
-                    <input type="text" name="content">
-                </td>
-            </tr>
+            </tr>   
             <tr>
                 <th>
                     値段
                 </th>
                 <td>
-                    <input type="text" name="price">
+                    <input type="text" name="amount">
                 </td>
             </tr>
             <tr>
                 <th>
-                    日付
+                    メモ
                 </th>
                 <td>
-                    <input type="date" name="date">
+                    <input type="text" name="description">
                 </td>
             </tr>
         </table>
