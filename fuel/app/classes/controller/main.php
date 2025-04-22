@@ -1,81 +1,82 @@
 <?php
 
-class Controller_Main extends Controller
+use Model\Register;
+
+class Controller_Main extends Controller_Template
 {
 
-    //public function before()
-    //{
-    //    if (!\Auth::check()) {
-    //        Session::set_flash('error', 'ログインが必要です。');
-    //        return Response::redirect('/login');
-    //    }
-    //}
+    public function before()
+    {
+        parent::before();
 
+        // if (!\Auth::check()) {
+        //     return Response::redirect('/auth/login');
+        // }
 
+        // $user_id = \Session::get('user_id');
+        // if (!$user_id) {
+        //     return Response::redirect('/auth/login');
+        // }
+
+        $this->template->title = '家計簿アプリ';
+        $this->template->site_name = '0さんの家計簿';
+    }
+
+    
     public function action_index()
     {
-        $date_obj = \Date::forge()->format('%Y-%m-%d');
+        $date_original = \Date::forge()->format('%Y-%m-%d');
+        $date_formatted = \Date::forge()->format('%m/%d');
 
-        if (Auth::check()) {
-
-        $user_id_info = \Auth::get_user_id();
-        $user_id = $user_id_info[1];
-        $transactions = Model\Register::get($user_id, $date_obj);
+        $user_id = \Auth::get_user_id();
+        $transactions = Register::read1($user_id, $date_original);
 
         $data = [
-            'date' => $date_obj,
+            'original' => $date_original,
+            'formatted' => $date_formatted,
             'transactions' => $transactions
         ];
 
-
-        return View::forge('main', $data);
-        }
-        else{
-            return Response::redirect('auth/login');
-        }
+        $this->template->content = View::forge('main', $data);
     }
 
 
-    public function action_previous($now_date)
+    public function post_calendar()
     {
-        $target_date = \Date::create_from_string($now_date, '%Y-%m-%d');
+        $submitted_date =\Input::post('date', null);
+        $operation = Input::post('operation', 'none');
+        $target_date = \Date::create_from_string($submitted_date, '%Y-%m-%d');
         $now_date_timestamp = $target_date->get_timestamp();
-        $previous_day_timestamp = $now_date_timestamp - 86400;
-        $previous_day = \Date::forge($previous_day_timestamp)->format('%Y-%m-%d');
-        $data = [
-            'date' => $previous_day
-        ];
-        return View::forge('main', $data);
-    }
+        switch (strtolower($operation)) {
+            case 'previous':
+                $date = $now_date_timestamp - 86400;
+                break;
+            case 'following':
+                $date = $now_date_timestamp + 86400;
+                break;
+            case 'update':
+                $date = $now_date_timestamp;
+                break;
+            default:
+                break;
+        }
 
-
-    public function action_following($now_date)
-    {
-        $target_date = \Date::create_from_string($now_date, '%Y-%m-%d');
-        $now_date_timestamp = $target_date->get_timestamp();
-        $following_day_timestamp = $now_date_timestamp + 86400;
-        $following_day = \Date::forge($following_day_timestamp)->format('%Y-%m-%d');
-        $data = [
-            'date' => $following_day
-        ];
-        return View::forge('main', $data);
-    }
-
-
-    public function action_calendar()
-    {
-        $submitted_date =\Input::get('selected_date');
+        $fomatted_date = \Date::forge($date)->format('%m/%d');
+        $original_date = \Date::forge($date)->format('%Y-%m-%d');
         
-        $user_id_info = \Auth::get_user_id();
-        $user_id = $user_id_info[1];
-        $transactions = Model\Register::get($user_id, $submitted_date);
+        $user_id = \Auth::get_user_id();
+        $transactions = Register::read1($user_id, $submitted_date);
 
         $data = [
-            'date' => $submitted_date,
+            'original' => $original_date,
+            'formatted' => $fomatted_date,
             'transactions' => $transactions
         ];
 
-        return View::forge('main', $data);
+        return Response::forge(json_encode($data), 200, [
+            'Content-Type' => 'application/json'
+        ]);
     }
 
 }
+

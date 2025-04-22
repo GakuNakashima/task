@@ -4,7 +4,7 @@ namespace Model;
 
 class Register extends \Model
 {
-    public static function insert($user_id, $data)
+    public static function create($user_id, $data)
     {
         $insert_data = [
             'user_id'     => $user_id,
@@ -12,8 +12,6 @@ class Register extends \Model
             'category'    => $data['category'],
             'amount'      => $data['amount'],
             'description' => $data['description'],
-            //'created_at'  => \Date::forge()->format('mysql'),
-            //'updated_at'  => \Date::forge()->format('mysql'),
         ];
 
         $query = \DB::insert('transactions')
@@ -21,9 +19,10 @@ class Register extends \Model
             ->execute();
     }
 
-    public static function get($user_id, $date_str)
+    public static function read1($user_id, $date_str)
     {
         $query = \DB::select(
+            'id',
             'category',
             'amount',
             'description',
@@ -36,4 +35,44 @@ class Register extends \Model
         $result = $query->execute()->as_array();
         return $result;
     }
+
+    public static function read2($id)
+    {
+        $query = \DB::select(
+            'id',
+            'category',
+            'amount',
+            'description',
+        )
+        ->from('transactions') 
+        ->where('id', '=', $id)
+        ->where('deleted_at', 'is', null);
+        
+        $result = $query->execute()->as_array();
+        return $result;
+    }
+    
+
+    public static function update($data)
+    {
+        $update_data = [
+            'category'    => $data['category'],
+            'amount'      => $data['amount'],
+            'description' => $data['description'],  
+        ];
+
+        $query = \DB::update('transactions')
+            ->set($update_data)
+            ->where('id', '=', $data['id'])
+            ->execute();
+    }
+
+
+    public static function delete($id)
+    {
+        $query = \DB::update('transactions')
+            ->set(['deleted_at' => date('Y-m-d H:i:s')])
+            ->where('id', '=', $id)
+            ->execute();
+    }   
 }

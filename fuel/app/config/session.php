@@ -62,7 +62,7 @@ return array(
 	 *
 	 */
 
-	'driver' => 'db',
+	'driver' => 'cookie',
 
 	/**
 	 * -------------------------------------------------------------------------
@@ -93,7 +93,7 @@ return array(
 	 *
 	 */
 
-	'cookie_domain'    => '',
+	'cookie_domain'    => null,
 	'cookie_path'      => '/',
 	'cookie_http_only' => null,
 	'cookie_same_site' => null,

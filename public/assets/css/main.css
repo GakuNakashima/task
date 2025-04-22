@@ -1,0 +1,49 @@
+.date {
+    font-size: 80px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.select {
+    float: left;
+    padding: 20px 200px;
+}
+
+.editor {
+    float: right;
+    padding: 20px 200px;
+}
+
+.register {
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.money {
+    font-size: 50px;
+    padding: 1px 280px 1px;
+}  
+
+.memo {
+    font-size: 30px;
+    padding: 1px 300px 1px;
+}  
+
+
+.logout {
+    display: flex;
+    right: 0;
+    top: 0;
+    text-decoration: none;
+    float: right;
+}
+
+.transaction {
+    border-top: solid 1px black;
+    border-bottom: solid 1px black;
+}

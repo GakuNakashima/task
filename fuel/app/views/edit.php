@@ -11,19 +11,11 @@
     <?php if ($error_msg): ?>
         <p><?php echo $error_msg; ?></p>
     <?php endif; ?>
-    <form action="/register/create" method="post">
+    <form action="/register/update" method="post">
         <table>
             <tr>
                 <th>
-                    日付
-                </th>
-                <td>
-                    <input type="date" name="date">
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    カテゴリー
+                    カテゴリー：
                 </th>
                 <td>
                     <select name="category" id="">
@@ -37,22 +29,23 @@
             </tr>   
             <tr>
                 <th>
-                    値段
+                    値段：
                 </th>
                 <td>
-                    <input type="text" name="amount">
+                    <input type="text" name="amount" value="<?php echo $transactions[0]['amount']; ?>">
                 </td>
             </tr>
             <tr>
                 <th>
-                    メモ
+                    メモ：
                 </th>
                 <td>
-                    <input type="text" name="description">
+                    <input type="text" name="description" value="<?php echo $transactions[0]['description']; ?>">
                 </td>
             </tr>
         </table>
-        <input type="submit" value="登録する">
+        <input type="hidden" name="id" value="<?php echo $transactions[0]['id']; ?>">
+        <input type="submit" value="編集する">
     </form>      
 </body>
 </html>

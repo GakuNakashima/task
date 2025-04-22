@@ -4,38 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <?= \Asset::css('main.css'); ?>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-latest.js'></script>
+
 </head>
 <body>
 
-    <?php echo $date; ?>
+    <a class="register" href="/register">+</a>
 
 
-    <p>
+    <a class="logout" href="/auth/logout">ログアウト</a>
 
-        <?php
-            $previous_day_url = \Uri::create('main/previous/' . $date);
-        ?>
-        <a href="<?php echo $previous_day_url; ?>">前の日を表示</a>
+    
+    <button data-bind="click: previousDay">前日</button>
 
-        <?php
-            $following_day_url = \Uri::create('main/following/' . $date);
-        ?>
-        <a href="<?php echo $following_day_url; ?>">次の日を表示</a>
-    </p>
+    <input type="date" data-bind="value: inputDate">
+
+    <button data-bind="click: followingDay">翌日</button>
+
+    <div data-bind="visible: isLoading"">
+        <p >ロード中...</p>
+    </div>
 
 
-    <form method="GET" action="/main/calendar">
-        <label>日付を選択:</label>
-        <input type="date" name="selected_date" value="<?php echo $date; ?>">
-        <button type="submit">この日付を表示</button>
-    </form>
+    <br>
+    <br>
 
-    <a href="/register">登録する</a>
+    <span class="date" data-bind="text: outputDate"></span>
 
-    <?php foreach ($transactions as $transaction) : ?>
-        <p><?php echo $transaction['category']; ?>: <?php echo $transaction['amount']; ?></p>
-        <p><?php echo $transaction['description']; ?></p>
-    <?php endforeach; ?>
+    <div data-bind="foreach: transactions">
+        <div class="transaction">
+            <p class="money"><span data-bind="text: category"></span> : <span data-bind="text: amount"></span>円</p>
+
+            <div class="editor">
+                <form method="GET" action="/register/edit">
+                    <input type="hidden" name="edit" data-bind="attr: { value: id }">
+                    <button type="submit">編集する</button>
+                </form>
+
+                <form method="GET" action="/register/delete">
+                    <input type="hidden" name="delete" data-bind="attr: { value: id }">
+                    <button type="submit">削除する</button>
+                </form>
+            </div>
+
+            <p class="memo">メモ : <span data-bind="text: description"></span></p>
+
+        </div>
+    </div>
+
+
+
+    <script>
+
+        // --- Knockout.js ViewModel 定義 ---
+        function DateViewModel() {
+            var self = this;
+
+            self.inputDate = ko.observable('<?php echo $original; ?>');
+            self.outputDate = ko.observable('<?php echo $formatted; ?>');
+            self.transactions = ko.observableArray([]);
+            self.isLoading = ko.observable(false);
+
+            self.inputDate.subscribe(function(newDateValue) {
+                self.updateDateOnServer('update');
+            });
+            self.previousDay = function() {
+                self.updateDateOnServer('previous');
+            };
+            self.followingDay = function() {
+                self.updateDateOnServer('following');
+            };
+
+            self.updateDateOnServer = function(operation) {
+                var baseDate = self.inputDate();
+                self.isLoading(true);
+                self.outputDate('');
+                self.transactions([]);
+                var ajaxUrl = '<?php echo Uri::create("main/calendar"); ?>';
+
+                $.ajax({
+                    url: ajaxUrl,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        date: baseDate,
+                        operation: operation
+                    },
+
+                    success: function(response) {
+                        self.outputDate(response.formatted);
+                        self.transactions(response.transactions);
+                        self.inputDate(response.original);
+                    },
+                    error: function() {
+                        self.outputDate('エラー');
+                    },
+                    complete: function() {
+                        self.isLoading(false);
+                    }
+                });
+            }
+        }
+
+        $(document).ready(function() {
+            ko.applyBindings(new DateViewModel());
+        });
+    </script>
 
 </body>
 </html>

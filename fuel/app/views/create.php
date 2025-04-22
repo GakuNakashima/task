@@ -7,6 +7,10 @@
     <?= \Asset::css('form.css'); ?>
 </head>
 <body>
+    <?php $error_msg = \Session::get_flash('error_msg'); ?>
+    <?php if ($error_msg): ?>
+        <p><?php echo $error_msg; ?></p>
+    <?php endif; ?>
     <form action="/auth/create" method="post">
         <table>
             <tr>
