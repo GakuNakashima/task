@@ -62,9 +62,11 @@
         function DateViewModel() {
             var self = this;
 
+            var transactions = <?php echo json_encode($transactions); ?>;
+
             self.inputDate = ko.observable('<?php echo $original; ?>');
             self.outputDate = ko.observable('<?php echo $formatted; ?>');
-            self.transactions = ko.observableArray([]);
+            self.transactions = ko.observableArray(transactions);
             self.isLoading = ko.observable(false);
 
             self.inputDate.subscribe(function(newDateValue) {
@@ -80,8 +82,6 @@
             self.updateDateOnServer = function(operation) {
                 var baseDate = self.inputDate();
                 self.isLoading(true);
-                self.outputDate('');
-                self.transactions([]);
                 var ajaxUrl = '<?php echo Uri::create("main/calendar"); ?>';
 
                 $.ajax({

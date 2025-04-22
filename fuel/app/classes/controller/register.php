@@ -20,7 +20,7 @@ class Controller_Register extends Controller
 
         Model\Register::create($user_id, $data);
 
-        return \Response::redirect('main'); 
+        return \Response::redirect('main/index/' . $data['date']); 
     }
 
 
@@ -49,7 +49,7 @@ class Controller_Register extends Controller
 
         Model\Register::update($data);
 
-        return \Response::redirect('main');
+        return \Response::redirect('main/index/' . $data['date']);
     }
 
 

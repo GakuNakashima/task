@@ -43,6 +43,7 @@ class Register extends \Model
             'category',
             'amount',
             'description',
+            'date',
         )
         ->from('transactions') 
         ->where('id', '=', $id)

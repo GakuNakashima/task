@@ -45,6 +45,7 @@
             </tr>
         </table>
         <input type="hidden" name="id" value="<?php echo $transactions[0]['id']; ?>">
+        <input type="hidden" name="date" value="<?php echo $transactions[0]['date']; ?>">
         <input type="submit" value="編集する">
     </form>      
 </body>

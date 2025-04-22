@@ -23,10 +23,15 @@ class Controller_Main extends Controller_Template
     }
 
     
-    public function action_index()
+    public function action_index($date = null)
     {
-        $date_original = \Date::forge()->format('%Y-%m-%d');
-        $date_formatted = \Date::forge()->format('%m/%d');
+        if (empty($date)) {
+            $date_original = \Date::forge()->format('%Y-%m-%d');
+                $date_formatted = \Date::forge()->format('%m/%d');
+        } else {
+            $date_original = \Date::forge($date)->format('%Y-%m-%d');
+            $date_formatted = \Date::forge($date)->format('%m/%d');
+        }
 
         $user_id = \Auth::get_user_id();
         $transactions = Register::read1($user_id, $date_original);
@@ -37,7 +42,7 @@ class Controller_Main extends Controller_Template
             'transactions' => $transactions
         ];
 
-        $this->template->content = View::forge('main', $data);
+        $this->template->content = \View::forge('main', $data);
     }
 
 
