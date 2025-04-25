@@ -34,7 +34,11 @@ class Controller_Main extends Controller_Template
         }
 
         $user_id = \Auth::get_user_id();
-        $transactions = Register::read1($user_id, $date_original);
+        // if (!$user_id) {
+        //     \Session::set_flash('error_msg', 'ユーザーidが取得できませんでした');
+        //     return Response::redirect('/auth/login');
+        // }
+        $transactions = Register::read_from_date($user_id, $date_original);
 
         $data = [
             'original' => $date_original,
@@ -46,7 +50,7 @@ class Controller_Main extends Controller_Template
     }
 
 
-    public function post_calendar()
+    public function post_submitted()
     {
         $submitted_date =\Input::post('date', null);
         $operation = Input::post('operation', 'none');
@@ -70,7 +74,11 @@ class Controller_Main extends Controller_Template
         $original_date = \Date::forge($date)->format('%Y-%m-%d');
         
         $user_id = \Auth::get_user_id();
-        $transactions = Register::read1($user_id, $submitted_date);
+        // if (!$user_id) {
+        //     \Session::set_flash('error_msg', 'ユーザーidが取得できませんでした');
+        //     return Response::redirect('/auth/login');
+        // }
+        $transactions = Register::read_from_date($user_id, $submitted_date);
 
         $data = [
             'original' => $original_date,

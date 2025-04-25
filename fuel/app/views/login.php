@@ -13,6 +13,7 @@
     <?php endif; ?>
     
     <form action="/auth/login" method="post">
+        <input type="hidden" name="<?php echo \Config::get('security.csrf_token_key'); ?>" value="<?php echo Security::fetch_token(); ?>">
         <table>
             <tr>
                 <th>
@@ -32,7 +33,7 @@
             </tr>
         </table>
         <input type="submit" value="ログインする">
-        <a href="/auth/create">新規登録する</a>
+        <a href="/auth/createuser">新規登録する</a>
     </form>  
     
 </body>

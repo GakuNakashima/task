@@ -17,9 +17,12 @@ class Register extends \Model
         $query = \DB::insert('transactions')
             ->set($insert_data)
             ->execute();
+
+        return $query;
     }
 
-    public static function read1($user_id, $date_str)
+
+    public static function read_from_date($user_id, $date_str)
     {
         $query = \DB::select(
             'id',
@@ -36,7 +39,8 @@ class Register extends \Model
         return $result;
     }
 
-    public static function read2($id)
+
+    public static function read_from_id($id)
     {
         $query = \DB::select(
             'id',
@@ -54,7 +58,7 @@ class Register extends \Model
     }
     
 
-    public static function update($data)
+    public static function update($user_id, $data)
     {
         $update_data = [
             'category'    => $data['category'],
@@ -65,15 +69,21 @@ class Register extends \Model
         $query = \DB::update('transactions')
             ->set($update_data)
             ->where('id', '=', $data['id'])
+            ->where('user_id', '=', $user_id)
             ->execute();
+
+        return $query;
     }
 
 
-    public static function delete($id)
+    public static function delete($user_id, $id)
     {
         $query = \DB::update('transactions')
             ->set(['deleted_at' => date('Y-m-d H:i:s')])
             ->where('id', '=', $id)
+            ->where('user_id', '=', $user_id)
             ->execute();
+
+        return $query;
     }   
 }

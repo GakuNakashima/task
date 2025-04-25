@@ -11,7 +11,8 @@
     <?php if ($error_msg): ?>
         <p><?php echo $error_msg; ?></p>
     <?php endif; ?>
-    <form action="/auth/create" method="post">
+    <form action="/auth/createuser" method="post">
+        <input type="hidden" name="<?php echo \Config::get('security.csrf_token_key'); ?>" value="<?php echo Security::fetch_token(); ?>">
         <table>
             <tr>
                 <th>

@@ -10,6 +10,13 @@
 
 </head>
 <body>
+    <?php if (\Session::get_flash('success_msg')): ?>
+        <p><?php echo \Session::get_flash('success_msg'); ?></p>
+    <?php endif; ?>
+
+    <?php if (\Session::get_flash('error_msg')): ?>
+        <p><?php echo \Session::get_flash('error_msg'); ?></p>
+    <?php endif; ?>
 
     <a class="register" href="/register">+</a>
 
@@ -38,12 +45,14 @@
             <p class="money"><span data-bind="text: category"></span> : <span data-bind="text: amount"></span>円</p>
 
             <div class="editor">
-                <form method="GET" action="/register/edit">
+                <form method="POST" action="/register/edit">
+                    <input type="hidden" name="<?php echo \Config::get('security.csrf_token_key'); ?>" value="<?php echo Security::fetch_token(); ?>">
                     <input type="hidden" name="edit" data-bind="attr: { value: id }">
                     <button type="submit">編集する</button>
                 </form>
 
-                <form method="GET" action="/register/delete">
+                <form method="POST" action="/register/delete">
+                    <input type="hidden" name="<?php echo \Config::get('security.csrf_token_key'); ?>" value="<?php echo Security::fetch_token(); ?>">
                     <input type="hidden" name="delete" data-bind="attr: { value: id }">
                     <button type="submit">削除する</button>
                 </form>
@@ -58,11 +67,10 @@
 
     <script>
 
-        // --- Knockout.js ViewModel 定義 ---
         function DateViewModel() {
-            var self = this;
+            const self = this;
 
-            var transactions = <?php echo json_encode($transactions); ?>;
+            let transactions = <?php echo json_encode($transactions); ?>;
 
             self.inputDate = ko.observable('<?php echo $original; ?>');
             self.outputDate = ko.observable('<?php echo $formatted; ?>');
@@ -80,9 +88,9 @@
             };
 
             self.updateDateOnServer = function(operation) {
-                var baseDate = self.inputDate();
+                let baseDate = self.inputDate();
                 self.isLoading(true);
-                var ajaxUrl = '<?php echo Uri::create("main/calendar"); ?>';
+                let ajaxUrl = '<?php echo Uri::create("main/submitted"); ?>';
 
                 $.ajax({
                     url: ajaxUrl,

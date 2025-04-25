@@ -12,6 +12,7 @@
         <p><?php echo $error_msg; ?></p>
     <?php endif; ?>
     <form action="/register/create" method="post">
+        <input type="hidden" name="<?php echo \Config::get('security.csrf_token_key'); ?>" value="<?php echo Security::fetch_token(); ?>">
         <table>
             <tr>
                 <th>

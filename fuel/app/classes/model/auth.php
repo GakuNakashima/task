@@ -4,7 +4,7 @@ namespace Model;
 
 class Auth extends \Model
 {
-    public static function read($username, $email)
+    public static function read_auth($username, $email)
     {
         $query = \DB::select(
             'username',
